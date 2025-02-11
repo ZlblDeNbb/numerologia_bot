@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: constantine
+      POSTGRES_PASSWORD: dox123456
+      POSTGRES_DB: numerology_bot
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - bot_network
+
+  bot:
+    build: .
+    environment:
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      DB_URL: postgresql+psycopg2://constantine:dox123456@db:5432/numerology_bot  # Используем 'db', а не 'localhost'
+    depends_on:
+      - db
+    networks:
+      - bot_network
+
+volumes:
+  db_data:
+
+networks:
+  bot_network:
